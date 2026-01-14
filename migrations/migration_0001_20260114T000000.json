@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "name": "create-users",
+  "statements": [
+    "CREATE TABLE IF NOT EXISTS users (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  name TEXT NOT NULL,\n  password TEXT NOT NULL,\n  created_at INTEGER,\n  modified_at INTEGER,\n  deleted_at INTEGER\n)",
+    "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_name ON users(name)",
+    "UPDATE users SET created_at = strftime('%s','now') WHERE created_at IS NULL",
+    "UPDATE users SET modified_at = strftime('%s','now') WHERE modified_at IS NULL"
+  ]
+}

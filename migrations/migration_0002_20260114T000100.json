@@ -1,0 +1,9 @@
+{
+  "id": 2,
+  "name": "create-list-items",
+  "statements": [
+    "CREATE TABLE IF NOT EXISTS list_items (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  name TEXT NOT NULL,\n  category TEXT,\n  sorting INTEGER NOT NULL DEFAULT 0,\n  created_at INTEGER\n)",
+    "UPDATE list_items SET created_at = strftime('%s','now') WHERE created_at IS NULL",
+    "CREATE INDEX IF NOT EXISTS idx_list_items_category_sort ON list_items(category, sorting, id)"
+  ]
+}

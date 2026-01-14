@@ -13,9 +13,14 @@ export function initDb() {
   // Improve durability/concurrency for small apps
   try {
     db.pragma('journal_mode = WAL');
+    db.pragma('foreign_keys = ON');
   } catch (_) {
     // ignore pragma errors
   }
+}
+
+export function tx<T>(fn: () => T): T {
+  return (db.transaction(fn) as unknown as () => T)();
 }
 
 export default db;

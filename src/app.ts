@@ -1,8 +1,6 @@
 import express from 'express';
 
 import { initDb } from './models/db';
-import { initListItemsRepository } from './repositories/listItemsRepository';
-import { initUsersRepository } from './repositories/usersRepository';
 import listItemsRouter from './routes/listItems';
 import usersRouter from './routes/users';
 
@@ -14,11 +12,8 @@ app.get('/', (req, res) => {
   res.send('Test message');
 });
 
-// Initialize database and repositories
+// Initialize database (pragmas, connection)
 initDb();
-// note: use migration tool when more tables are added
-initUsersRepository();
-initListItemsRepository();
 
 // API routes
 app.use('/api/users', usersRouter);

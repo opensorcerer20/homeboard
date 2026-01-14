@@ -15,25 +15,7 @@ export interface PublicListItem {
   sorting: number;
 }
 
-export function initListItemsRepository() {
-  // Create list_items table if it doesn't exist
-  db.exec(
-    `CREATE TABLE IF NOT EXISTS list_items (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      category TEXT,
-      sorting INTEGER NOT NULL DEFAULT 0,
-      created_at INTEGER
-    )`
-  );
-
-  // Upgrade path: ensure created_at column exists
-  const cols = db.prepare(`PRAGMA table_info('list_items')`).all() as { name: string }[];
-  if (!cols.some((c) => c.name === 'created_at')) {
-    db.exec(`ALTER TABLE list_items ADD COLUMN created_at INTEGER`);
-    db.exec(`UPDATE list_items SET created_at = strftime('%s','now') WHERE created_at IS NULL`);
-  }
-}
+// Repository no longer owns table creation; handled by migrations
 
 export function insertListItem(name: string, category: string | null, sorting: number): number {
   const stmt = db.prepare(

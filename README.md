@@ -67,11 +67,23 @@
 - Passwords are hashed using bcrypt (10 rounds).
 
 **Data Access & Repositories:**
-- `src/models/db.ts`: sets up the SQLite connection and runtime settings (e.g., WAL). No table-specific logic.
-- `src/repositories/usersRepository.ts`: owns the `users` table (creation, seeding) and queries like `selectAllPublic()`, `findByName()`, and `insert()`.
-- App initialization calls both: `initDb()` then `initUsersRepository()` in [src/app.ts](src/app.ts).
- - `src/repositories/listItemsRepository.ts`: owns the `list_items` table with fields: `id`, `name`, `category`, `sorting`, `created_at`. Provides helpers to insert and list items globally or by `category`.
- - App initialization also calls `initListItemsRepository()` in [src/app.ts](src/app.ts).
+- `src/models/db.ts`: sets up SQLite (WAL, foreign_keys) and exposes a `tx()` helper for transactions.
+- `src/models/migrations.ts`: lightweight migration runner tracked in `schema_migrations`.
+- `src/models/seeds.ts`: dev-only seeding (users) when empty.
+- `src/repositories/usersRepository.ts`: query helpers for users (list, findByName, insert, archive/restore). No schema init.
+- `src/repositories/listItemsRepository.ts`: query helpers for list items (insert, list all/by category, update sorting). No schema init.
+- App initialization now only calls `initDb()` in [src/app.ts](src/app.ts). Migrations and seeds run via scripts (see below).
+- Migrations: JSON files in the `migrations/` folder named `migration_0001_<timestamp>.json` with shape:
+  - `{ id: number, name: string, statements: string[] }`
+  - Applied once in order by `id` and recorded in `schema_migrations`.
+  - Add a new file for each schema change; do not edit past migrations.
+
+**Database Commands:**
+- `npm run db:migrate`: applies pending JSON migrations.
+- `npm run db:seed`: runs dev-only seeders (e.g., demo users).
+- `npm run db:reset`: deletes the SQLite file and runs migrate + seed.
+  - Restriction: only allowed when `NODE_ENV=development`.
+  - Tip (macOS/Linux): `NODE_ENV=development npm run db:reset`
 
 
 # Future feature batches
