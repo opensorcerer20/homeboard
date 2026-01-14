@@ -2,7 +2,6 @@ import { Router } from 'express';
 
 import {
   getListItemsHandler,
-  patchListItemSortingHandler,
   postListItemHandler,
 } from '../controllers/listItemsController';
 
@@ -14,7 +13,6 @@ router.get('/', getListItemsHandler);
 // POST /api/list-items
 router.post('/', postListItemHandler);
 
-// PATCH /api/list-items/:id/sorting
-router.patch('/:id/sorting', patchListItemSortingHandler);
+// sorting removed from schema; no sorting route
 
 export default router;

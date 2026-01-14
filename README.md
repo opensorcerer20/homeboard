@@ -51,16 +51,40 @@
 
 - GET /api/list-items: list items
   - Query: `?category=string` (optional) to filter by category
-  - Response: `200 { items: [{ id, name, category, sorting }] }`
+  - Response: `200 { items: [{ id, name, category }] }`
 - POST /api/list-items: create an item
-  - Request body (JSON): `{ name: string, category?: string|null, sorting?: number }`
-  - Validation: `name` required; `category` optional string; `sorting` optional integer (defaults to 0)
-  - Response: `201 { id: number, name: string, category: string|null, sorting: number }`
+  - Request body (JSON): `{ name: string, category?: string|null }`
+  - Validation: `name` required; `category` optional string
+  - Response: `201 { id: number, name: string, category: string|null }`
   - Errors: `400` for validation; `500` on insert failure
-- PATCH /api/list-items/:id/sorting: update sorting value
-  - Request body (JSON): `{ sorting: number }`
-  - Response: `200 { id: number, sorting: number }`
+
+**Tasks Endpoints:**
+- GET /api/tasks: list tasks
+  - Query: `?category=string|null` (use `null` to filter unassigned category)
+  - Query: `?assignedUserId=number|null` (use `null` to filter unassigned)
+  - Query: `?includeArchived=true` to include soft-deleted tasks
+  - Response: `200 { items: [{ id, name, category, due_date, completed, assigned_user_id }] }`
+- GET /api/tasks/:id: fetch a single task
+  - Response: `200 { id, name, category, due_date, completed, assigned_user_id }`
+  - Errors: `404` not found
+- POST /api/tasks: create a task
+  - Request body: `{ name: string, category?: string|null, due_date?: number|null, completed?: boolean, assigned_user_id?: number|null }`
+  - Response: `201 { id, name, category, due_date, completed, assigned_user_id }`
+  - Errors: `400` validation; `400` when `assigned_user_id` invalid; `500` on insert failure
+- PATCH /api/tasks/:id: update task fields
+  - Request body: any subset of `{ name, category, due_date, completed, assigned_user_id }`
+  - Response: `200 { ...updated task }`
+  - Errors: `400` validation; `404` not found; `500` on update failure
+- PATCH /api/tasks/:id/completed: set completion state
+  - Request body: `{ completed: boolean }`
+  - Response: `200 { ...updated task }`
   - Errors: `400` invalid input; `404` not found; `500` on update failure
+- DELETE /api/tasks/:id: soft delete
+  - Response: `204`
+  - Errors: `404` not found; `500` on failure
+- POST /api/tasks/:id/restore: restore a soft-deleted task
+  - Response: `200 { ...restored task }`
+  - Errors: `404` not found; `500` on failure
 
 **Seed Data:**
 - On first run (when `users` table is empty), two demo users are created: `Alice` and `Bob`.

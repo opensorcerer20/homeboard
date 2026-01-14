@@ -1,0 +1,11 @@
+{
+  "id": 4,
+  "name": "drop_sorting_from_list_items",
+  "statements": [
+    "CREATE TABLE IF NOT EXISTS list_items_new (\n      id INTEGER PRIMARY KEY,\n      name TEXT NOT NULL,\n      category TEXT,\n      created_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))\n    )",
+    "INSERT INTO list_items_new (id, name, category, created_at) SELECT id, name, category, created_at FROM list_items",
+    "DROP TABLE list_items",
+    "ALTER TABLE list_items_new RENAME TO list_items",
+    "CREATE INDEX IF NOT EXISTS idx_list_items_category_id ON list_items (category, id)"
+  ]
+}
