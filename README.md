@@ -24,9 +24,9 @@
 
 
 # Roadmap for initial product
-- [ ] node server
+- [x] node server
 - [ ] dummy data
-  - [ ] family/group members
+  - [x] family/group members
   - [ ] groceries
   - [ ] shopping
   - [ ] chores (with assigned person)
@@ -39,6 +39,24 @@
   - [ ] add record to existing data table
   - [ ] edit
   - [ ] archive (soft delete)
+
+
+**API Endpoints (initial):**
+- GET /api/users: list user `id` and `name`
+- POST /api/users: create a user
+  - Request body (JSON): `{ name: string, password: string }`
+  - Validation: `name` required; `password` minimum 6 characters
+  - Response: `201 { id: number, name: string }`
+  - Errors: `400` for validation; `500` on insert failure
+
+**Seed Data:**
+- On first run (when `users` table is empty), two demo users are created: `Alice` and `Bob`.
+- Passwords are hashed using bcrypt (10 rounds).
+
+**Data Access & Repositories:**
+- `src/models/db.ts`: sets up the SQLite connection and runtime settings (e.g., WAL). No table-specific logic.
+- `src/repositories/usersRepository.ts`: owns the `users` table (creation, seeding) and queries like `selectAllPublic()`, `findByName()`, and `insert()`.
+- App initialization calls both: `initDb()` then `initUsersRepository()` in [src/app.ts](src/app.ts).
 
 
 # Future feature batches

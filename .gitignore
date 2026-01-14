@@ -2,3 +2,17 @@ node_modules/
 package-lock.json
 .env
 .vscode
+
+# SQLite database files and journals
+data/*.db
+data/*.sqlite*
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*-journal
+*-wal
+*-shm
+
+# Keep the empty data directory
+!data/.keep
