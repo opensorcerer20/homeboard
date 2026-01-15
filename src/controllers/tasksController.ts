@@ -33,8 +33,11 @@ export function getTaskHandler(req: Request, res: Response) {
 }
 
 export function postTaskHandler(req: Request, res: Response) {
-  const error = validateCreateTask(req.body);
-  if (error) return res.status(400).json({ error });
+  const validation = validateCreateTask(req.body, true);
+  if (!validation.success) {
+    const message = validation.errors[0]?.message ?? 'invalid input';
+    return res.status(400).json({ error: message, errors: validation.errors });
+  }
   try {
     const result = createTask({
       name: req.body.name,
@@ -53,8 +56,11 @@ export function postTaskHandler(req: Request, res: Response) {
 export function patchTaskHandler(req: Request, res: Response) {
   const id = Number(req.params.id);
   if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: 'invalid id' });
-  const error = validateUpdateTask(req.body);
-  if (error) return res.status(400).json({ error });
+  const validation = validateUpdateTask(req.body, true);
+  if (!validation.success) {
+    const message = validation.errors[0]?.message ?? 'invalid input';
+    return res.status(400).json({ error: message, errors: validation.errors });
+  }
   try {
     const ok = updateTaskPartial(id, req.body);
     if (!ok) return res.status(404).json({ error: 'not found or no changes' });

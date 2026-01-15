@@ -15,8 +15,11 @@ export function getUsers(_req: Request, res: Response) {
 }
 
 export function postUser(req: Request, res: Response) {
-  const error = validateCreateUser(req.body);
-  if (error) return res.status(400).json({ error });
+  const validation = validateCreateUser(req.body, true);
+  if (!validation.success) {
+    const message = validation.errors[0]?.message ?? 'invalid input';
+    return res.status(400).json({ error: message, errors: validation.errors });
+  }
 
   try {
     const result = createUser({ name: req.body.name, password: req.body.password });

@@ -16,8 +16,11 @@ export function getListItemsHandler(req: Request, res: Response) {
 }
 
 export function postListItemHandler(req: Request, res: Response) {
-  const error = validateCreateListItem(req.body);
-  if (error) return res.status(400).json({ error });
+  const validation = validateCreateListItem(req.body, true);
+  if (!validation.success) {
+    const message = validation.errors[0]?.message ?? 'invalid input';
+    return res.status(400).json({ error: message, errors: validation.errors });
+  }
 
   try {
     const result = createListItem({ name: req.body.name, category: req.body.category ?? null });

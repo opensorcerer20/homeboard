@@ -1,18 +1,34 @@
 import {
+  CreateListItemInput,
+  createListItemSchema,
+} from '../models/listItemModel';
+import {
   insertListItem,
   listAllItems,
   listItemsByCategory,
   PublicListItem,
 } from '../repositories/listItemsRepository';
+import {
+  validateSchema,
+  ValidationResult,
+} from '../validation/zodHelpers';
 
-export interface CreateListItemInput {
-  name: string;
-  category?: string | null;
-}
-
-export function validateCreateListItem({ name, category }: Partial<CreateListItemInput>): string | null {
-  if (typeof name !== 'string' || name.trim().length === 0) return 'name is required';
-  if (category !== undefined && category !== null && typeof category !== 'string') return 'category must be a string or null';
+export function validateCreateListItem(input: Partial<CreateListItemInput>): string | null;
+export function validateCreateListItem(
+  input: Partial<CreateListItemInput>,
+  detailed: true,
+): ValidationResult<CreateListItemInput>;
+export function validateCreateListItem(
+  input: Partial<CreateListItemInput>,
+  detailed: boolean = false,
+): string | null | ValidationResult<CreateListItemInput> {
+  const result = validateSchema(createListItemSchema, input);
+  if (detailed) {
+    return result;
+  }
+  if (!result.success) {
+    return result.errors[0]?.message ?? 'invalid input';
+  }
   return null;
 }
 

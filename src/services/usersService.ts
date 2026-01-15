@@ -1,24 +1,40 @@
 import bcrypt from 'bcrypt';
 
 import {
+  CreateUserInput,
+  createUserSchema,
+} from '../models/userModel';
+import {
   findByName,
   insert,
   PublicUser,
   selectAllPublic,
 } from '../repositories/usersRepository';
+import {
+  validateSchema,
+  ValidationResult,
+} from '../validation/zodHelpers';
 
 export function listUsers(): PublicUser[] {
   return selectAllPublic();
 }
 
-export interface CreateUserInput {
-  name: string;
-  password: string;
-}
-
-export function validateCreateUser({ name, password }: Partial<CreateUserInput>): string | null {
-  if (typeof name !== 'string' || name.trim().length === 0) return 'name is required';
-  if (typeof password !== 'string' || password.length < 6) return 'password must be at least 6 chars';
+export function validateCreateUser(input: Partial<CreateUserInput>): string | null;
+export function validateCreateUser(
+  input: Partial<CreateUserInput>,
+  detailed: true,
+): ValidationResult<CreateUserInput>;
+export function validateCreateUser(
+  input: Partial<CreateUserInput>,
+  detailed: boolean = false,
+): string | null | ValidationResult<CreateUserInput> {
+  const result = validateSchema(createUserSchema, input);
+  if (detailed) {
+    return result;
+  }
+  if (!result.success) {
+    return result.errors[0]?.message ?? 'invalid input';
+  }
   return null;
 }
 

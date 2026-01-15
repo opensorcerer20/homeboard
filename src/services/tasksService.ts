@@ -1,4 +1,10 @@
 import {
+  CreateTaskInput,
+  createTaskSchema,
+  UpdateTaskInput,
+  updateTaskSchema,
+} from '../models/taskModel';
+import {
   archiveTask,
   findById,
   insertTask,
@@ -11,45 +17,46 @@ import {
 import {
   selectAllPublic as selectAllUsers,
 } from '../repositories/usersRepository';
+import {
+  validateSchema,
+  ValidationResult,
+} from '../validation/zodHelpers';
 
-export interface CreateTaskInput {
-  name: string;
-  category?: string | null;
-  due_date?: number | null;
-  completed?: boolean;
-  assigned_user_id?: number | null;
-}
-
-export interface UpdateTaskInput {
-  name?: string;
-  category?: string | null;
-  due_date?: number | null;
-  completed?: boolean;
-  assigned_user_id?: number | null;
-}
-
-export function validateCreateTask(input: Partial<CreateTaskInput>): string | null {
-  if (typeof input.name !== 'string' || input.name.trim().length === 0) return 'name is required';
-  if (input.category !== undefined && input.category !== null && typeof input.category !== 'string')
-    return 'category must be a string or null';
-  if (input.due_date !== undefined && input.due_date !== null && !Number.isInteger(input.due_date))
-    return 'due_date must be a unix timestamp (integer seconds) or null';
-  if (input.completed !== undefined && typeof input.completed !== 'boolean') return 'completed must be a boolean';
-  if (input.assigned_user_id !== undefined && input.assigned_user_id !== null && !Number.isInteger(input.assigned_user_id))
-    return 'assigned_user_id must be an integer or null';
+export function validateCreateTask(input: Partial<CreateTaskInput>): string | null;
+export function validateCreateTask(
+  input: Partial<CreateTaskInput>,
+  detailed: true,
+): ValidationResult<CreateTaskInput>;
+export function validateCreateTask(
+  input: Partial<CreateTaskInput>,
+  detailed: boolean = false,
+): string | null | ValidationResult<CreateTaskInput> {
+  const result = validateSchema(createTaskSchema, input);
+  if (detailed) {
+    return result;
+  }
+  if (!result.success) {
+    return result.errors[0]?.message ?? 'invalid input';
+  }
   return null;
 }
 
-export function validateUpdateTask(input: Partial<UpdateTaskInput>): string | null {
-  if (input.name !== undefined && (typeof input.name !== 'string' || input.name.trim().length === 0))
-    return 'name must be a non-empty string';
-  if (input.category !== undefined && input.category !== null && typeof input.category !== 'string')
-    return 'category must be a string or null';
-  if (input.due_date !== undefined && input.due_date !== null && !Number.isInteger(input.due_date))
-    return 'due_date must be a unix timestamp (integer seconds) or null';
-  if (input.completed !== undefined && typeof input.completed !== 'boolean') return 'completed must be a boolean';
-  if (input.assigned_user_id !== undefined && input.assigned_user_id !== null && !Number.isInteger(input.assigned_user_id))
-    return 'assigned_user_id must be an integer or null';
+export function validateUpdateTask(input: Partial<UpdateTaskInput>): string | null;
+export function validateUpdateTask(
+  input: Partial<UpdateTaskInput>,
+  detailed: true,
+): ValidationResult<UpdateTaskInput>;
+export function validateUpdateTask(
+  input: Partial<UpdateTaskInput>,
+  detailed: boolean = false,
+): string | null | ValidationResult<UpdateTaskInput> {
+  const result = validateSchema(updateTaskSchema, input);
+  if (detailed) {
+    return result;
+  }
+  if (!result.success) {
+    return result.errors[0]?.message ?? 'invalid input';
+  }
   return null;
 }
 
