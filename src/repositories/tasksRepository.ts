@@ -1,3 +1,4 @@
+import { CATEGORY } from '../models/categories';
 import db from '../models/db';
 
 export interface TaskRow {
@@ -40,7 +41,7 @@ export function addReminder(
   dueDate: number | null = null,
   assignedUserId: number | null = null
 ): number {
-  return insertTask(name, 'reminder', dueDate, false, assignedUserId);
+	return insertTask(name, CATEGORY.REMINDER, dueDate, false, assignedUserId);
 }
 
 export function addChore(
@@ -48,7 +49,7 @@ export function addChore(
   dueDate: number | null = null,
   assignedUserId: number | null = null
 ): number {
-  return insertTask(name, 'chore', dueDate, false, assignedUserId);
+	return insertTask(name, CATEGORY.CHORE, dueDate, false, assignedUserId);
 }
 
 export function toPublic(row: TaskRow): PublicTask {

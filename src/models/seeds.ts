@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 
+import { CATEGORY } from './categories';
 import db from './db';
 
 export function runSeeds() {
@@ -15,6 +16,32 @@ export function runSeeds() {
     insert.run('Bob', bcrypt.hashSync('secret', saltRounds));
   }
 
+  // Seed list_items only if the table exists and has no rows yet
+  try {
+  const listItemsTable = db
+    .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='list_items'")
+    .get() as { name?: string } | undefined;
+  if (listItemsTable && listItemsTable.name === 'list_items') {
+    const countListItems = db
+      .prepare('SELECT COUNT(1) AS c FROM list_items')
+      .get() as { c: number };
+    if (countListItems.c === 0) {
+      const insertListItem = db.prepare(
+        'INSERT INTO list_items (name, category) VALUES (?, ?)' 
+      );
+      // Groceries
+      insertListItem.run('Milk', CATEGORY.GROCERIES);
+      insertListItem.run('Eggs', CATEGORY.GROCERIES);
+      insertListItem.run('Bread', CATEGORY.GROCERIES);
+      // Shopping
+      insertListItem.run('Paper towels', CATEGORY.SHOPPING);
+      insertListItem.run('Dish soap', CATEGORY.SHOPPING);
+    }
+  }
+  } catch (_) {
+  // ignore if list_items table does not exist or any seed error
+  }
+
   try {
     const tableExists = db
       .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='tasks'")
@@ -25,9 +52,15 @@ export function runSeeds() {
         const insertTask = db.prepare(
           "INSERT INTO tasks (name, category, due_date, completed, assigned_user_id, created_at, modified_at) VALUES (?, ?, ?, ?, ?, strftime('%s','now'), strftime('%s','now'))"
         );
-        insertTask.run('Buy groceries', 'shopping', null, 0, null);
-        insertTask.run('Vacuum living room', 'chores', null, 0, null);
-        insertTask.run('Pay electricity bill', 'reminders', null, 0, null);
+        insertTask.run('Buy groceries', CATEGORY.SHOPPING, null, 0, null);
+        insertTask.run('Vacuum living room', CATEGORY.CHORE, null, 0, null);
+        insertTask.run('Pay electricity bill', CATEGORY.REMINDER, null, 0, null);
+
+        // Also seed tasks that use the canonical 'chore' and 'reminder' categories
+        insertTask.run('Take out trash', CATEGORY.CHORE, null, 0, null);
+        insertTask.run('Do the dishes', CATEGORY.CHORE, null, 0, null);
+        insertTask.run('Call mom', CATEGORY.REMINDER, null, 0, null);
+        insertTask.run('Renew car registration', CATEGORY.REMINDER, null, 0, null);
       }
     }
   } catch (_) {

@@ -1,3 +1,4 @@
+import { CATEGORY } from '../models/categories';
 import db from '../models/db';
 
 export interface ListItemRow {
@@ -25,11 +26,11 @@ export function insertListItem(name: string, category: string | null): number {
 }
 
 export function addShopping(name: string): number {
-  return insertListItem(name, 'shopping');
+  return insertListItem(name, CATEGORY.SHOPPING);
 }
 
 export function addGroceries(name: string): number {
-  return insertListItem(name, 'groceries');
+  return insertListItem(name, CATEGORY.GROCERIES);
 }
 
 export function listItemsByCategory(category: string): PublicListItem[] {

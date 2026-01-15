@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 
+import { CATEGORY } from './models/categories';
 import { initDb } from './models/db';
 import listItemsRouter from './routes/listItems';
 import tasksRouter from './routes/tasks';
@@ -20,10 +21,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-  const groceries = getListItems('groceries');
-  const shopping = getListItems('shopping');
-  const chores = listTasks({ category: 'chore' });
-  const reminders = listTasks({ category: 'reminder' });
+  const groceries = getListItems(CATEGORY.GROCERIES);
+  const shopping = getListItems(CATEGORY.SHOPPING);
+  const chores = listTasks({ category: CATEGORY.CHORE });
+  const reminders = listTasks({ category: CATEGORY.REMINDER });
 
   res.render('index', {
     title: 'Home Board',
