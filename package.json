@@ -39,6 +39,7 @@
   "dependencies": {
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
-    "better-sqlite3": "^12.6.0"
+    "better-sqlite3": "^12.6.0",
+    "ejs": "^3.1.10"
   }
 }

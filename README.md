@@ -25,15 +25,15 @@
 
 # Roadmap for initial product
 - [x] node server
-- [ ] dummy data
+- [x] dummy data
   - [x] family/group members
-  - [ ] groceries
-  - [ ] shopping
-  - [ ] chores (with assigned person)
-  - [ ] reminders
+  - [x] groceries
+  - [x] shopping
+  - [x] chores (with assigned person)
+  - [x] reminders
   - [ ] messages
 - [ ] front end
-- [ ] database with seeding
+- [x] database with seeding
   - [ ] see dummy data for tables
 - [ ] admin page
   - [ ] add record to existing data table
@@ -114,3 +114,4 @@
 
 
 # Notes
+- in the future, may need to download updates, which means database migrations would come in handy
