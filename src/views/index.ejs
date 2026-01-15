@@ -8,94 +8,169 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- htmx -->
     <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-GS8tE5Zr1gbZzLxGX2Ah+VdspLUdDt4Or7uNFzwBSf0X9Z3V+mb4WZCQbG0P/2Qp" crossorigin="anonymous"></script>
+    <!-- Minimum readable typography -->
+    <style>
+      body {
+        font-size: 18pt;
+        font-weight: 700;
+      }
+    </style>
   </head>
   <body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
     <header class="border-b border-slate-700 bg-slate-900/80 backdrop-blur sticky top-0 z-10">
-      <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-8">
         <div>
-          <h1 class="text-2xl font-semibold tracking-tight"><%= title %></h1>
-          <p class="text-sm text-slate-400"><%= subtitle %></p>
+          <h1 class="tracking-tight"><%= title %></h1>
+          <p class="text-slate-400"><%= subtitle %></p>
         </div>
-        <span class="text-xs uppercase tracking-wide text-slate-500">Test Display</span>
+        <div class="flex items-center gap-4">
+          <label for="font-select" class="text-slate-400">Font:</label>
+          <select id="font-select" class="bg-slate-800 border border-slate-600 rounded px-3 py-1 text-slate-100">
+            <option value="default" selected>Default</option>
+            <option value="courier">Courier New</option>
+            <option value="arial">Arial</option>
+            <option value="georgia">Georgia</option>
+            <option value="times">Times New Roman</option>
+            <option value="verdana">Verdana</option>
+            <option value="fira">Fira Code (mono)</option>
+            <option value="consolas">Consolas (mono)</option>
+          </select>
+        </div>
       </div>
     </header>
 
     <main class="flex-1">
       <div class="max-w-5xl mx-auto px-4 py-6 grid gap-4 md:grid-cols-2">
         <!-- Row 1: Groceries (left) -->
-        <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4">
-          <h2 class="text-lg font-semibold mb-3">Groceries</h2>
-          <ul class="space-y-1 text-sm text-slate-200">
-            <% if (groceries && groceries.length) { %>
-              <% groceries.forEach(function(item) { %>
-                <li>• <%= item.name %></li>
-              <% }) %>
-            <% } else { %>
-              <li class="text-slate-500 italic">No grocery items yet</li>
-            <% } %>
-          </ul>
-        </section>
+        <div class="space-y-1">
+          <div class="p-4">
+            <h2>Groceries</h2>
+          </div>
+          <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4 h-[400px] overflow-y-auto">
+            <ul class="space-y-1 text-slate-200">
+              <% if (groceries && groceries.length) { %>
+                <% groceries.forEach(function(item) { %>
+                  <li>• <%= item.name %></li>
+                <% }) %>
+              <% } else { %>
+                <li class="text-slate-500 italic">No grocery items yet</li>
+              <% } %>
+            </ul>
+          </section>
+        </div>
 
         <!-- Row 1: Reminders (right) -->
-        <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4">
-          <h2 class="text-lg font-semibold mb-3">Reminders</h2>
-          <ul class="space-y-1 text-sm text-slate-200">
-            <% if (reminders && reminders.length) { %>
-              <% reminders.forEach(function(task) { %>
-                <li>
-                  <span class="mr-1"><%= task.completed ? '☑' : '☐' %></span>
-                  <span><%= task.name %></span>
-                </li>
-              <% }) %>
-            <% } else { %>
-              <li class="text-slate-500 italic">No reminders yet</li>
-            <% } %>
-          </ul>
-        </section>
+        <div class="space-y-1">
+          <div class="p-4">
+            <h2>Reminders</h2>
+          </div>
+          <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4 h-[400px] overflow-y-auto">
+            <ul class="space-y-1 text-slate-200">
+              <% if (reminders && reminders.length) { %>
+                <% reminders.forEach(function(task) { %>
+                  <li>
+                    <span class="mr-1"><%= task.completed ? '☑' : '☐' %></span>
+                    <span><%= task.name %></span>
+                  </li>
+                <% }) %>
+              <% } else { %>
+                <li class="text-slate-500 italic">No reminders yet</li>
+              <% } %>
+            </ul>
+          </section>
+        </div>
 
         <!-- Row 2: Shopping (left) -->
-        <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4">
-          <h2 class="text-lg font-semibold mb-3">Shopping</h2>
-          <ul class="space-y-1 text-sm text-slate-200">
-            <% if (shopping && shopping.length) { %>
-              <% shopping.forEach(function(item) { %>
-                <li>• <%= item.name %></li>
-              <% }) %>
-            <% } else { %>
-              <li class="text-slate-500 italic">No shopping items yet</li>
-            <% } %>
-          </ul>
-        </section>
+        <div class="space-y-1">
+          <div class="p-4">
+            <h2>Shopping</h2>
+          </div>
+          <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4 h-[400px] overflow-y-auto">
+            <ul class="space-y-1 text-slate-200">
+              <% if (shopping && shopping.length) { %>
+                <% shopping.forEach(function(item) { %>
+                  <li>• <%= item.name %></li>
+                <% }) %>
+              <% } else { %>
+                <li class="text-slate-500 italic">No shopping items yet</li>
+              <% } %>
+            </ul>
+          </section>
+        </div>
 
         <!-- Row 2: Chores (right) -->
-        <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4">
-          <h2 class="text-lg font-semibold mb-3">Chores</h2>
-          <ul class="space-y-1 text-sm text-slate-200">
-            <% if (chores && chores.length) { %>
-              <% chores.forEach(function(task) { %>
-                <li>
-                  <span class="mr-1"><%= task.completed ? '☑' : '☐' %></span>
-                  <span><%= task.name %></span>
-                </li>
-              <% }) %>
-            <% } else { %>
-              <li class="text-slate-500 italic">No chores yet</li>
-            <% } %>
-          </ul>
-        </section>
+        <div class="space-y-1">
+          <div class="p-4">
+            <h2>Chores</h2>
+          </div>
+          <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4 h-[400px] overflow-y-auto">
+            <ul class="space-y-1 text-slate-200">
+              <% if (chores && chores.length) { %>
+                <% chores.forEach(function(task) { %>
+                  <li>
+                    <span class="mr-1"><%= task.completed ? '☑' : '☐' %></span>
+                    <span><%= task.name %></span>
+                  </li>
+                <% }) %>
+              <% } else { %>
+                <li class="text-slate-500 italic">No chores yet</li>
+              <% } %>
+            </ul>
+          </section>
+        </div>
 
         <!-- Messages -->
-  <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4 md:col-span-2">
-          <h2 class="text-lg font-semibold mb-3">Messages</h2>
-          <div class="text-sm text-slate-200">
-            <p>Welcome to the Home Board prototype. This page is rendered with Express + EJS, styled with Tailwind via CDN, and wired to your SQLite data for groceries, shopping, chores, and reminders.</p>
+        <div class="space-y-1 md:col-span-2">
+          <div class="p-4">
+            <h2>Messages</h2>
           </div>
-        </section>
+          <section class="bg-slate-800/60 rounded-xl border border-slate-700 shadow-sm p-4 h-[400px] overflow-y-auto">
+            <div class="text-slate-200">
+              <p>Welcome to the Home Board prototype. This page is rendered with Express + EJS, styled with Tailwind via CDN, and wired to your SQLite data for groceries, shopping, chores, and reminders.</p>
+            </div>
+          </section>
+        </div>
       </div>
     </main>
 
-    <footer class="border-t border-slate-800 text-xs text-slate-500 py-3 text-center">
+    <footer class="border-t border-slate-800 text-slate-500 py-3 text-center">
       Home Board · Test Page
     </footer>
+    <script>
+      (function () {
+        var select = document.getElementById('font-select');
+        if (!select) return;
+        select.addEventListener('change', function () {
+          var value = select.value;
+          var family = '';
+          switch (value) {
+            case 'courier':
+              family = '"Courier New", Courier, monospace';
+              break;
+            case 'arial':
+              family = 'Arial, Helvetica, sans-serif';
+              break;
+            case 'georgia':
+              family = 'Georgia, "Times New Roman", serif';
+              break;
+            case 'times':
+              family = '"Times New Roman", Times, serif';
+              break;
+            case 'verdana':
+              family = 'Verdana, Geneva, sans-serif';
+              break;
+            case 'fira':
+              family = '"Fira Code", Menlo, Monaco, Consolas, "Courier New", monospace';
+              break;
+            case 'consolas':
+              family = 'Consolas, "Courier New", monospace';
+              break;
+            default:
+              family = '';
+          }
+          document.body.style.fontFamily = family;
+        });
+      })();
+    </script>
   </body>
 </html>

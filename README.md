@@ -33,6 +33,8 @@
   - [x] reminders
   - [ ] messages
 - [ ] front end
+  - [ ] uses back end data
+  - [ ] updates with data updates (SSE likely needed)
 - [x] database with seeding
   - [ ] see dummy data for tables
 - [ ] admin page
