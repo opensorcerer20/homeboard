@@ -1,0 +1,13 @@
+{
+  "name": "homeboard-version2",
+  "version": "1.0.0",
+  "description": "Bulletin board for a one- or two-family home (v2)",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ejs": "^3.1.10"
+  }
+}

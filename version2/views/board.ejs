@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= board.title %></title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div>
+        <h1><%= board.title %></h1>
+        <p class="subtitle"><%= board.subtitle %></p>
+      </div>
+      <div class="header-right">
+        <section class="connection">
+          <span class="connection-text">Access via:</span>
+          <span class="connection-url"><%= boardUrl %></span>
+        </section>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="Toggle light or dark mode"
+        >
+          <span class="theme-toggle__icon">🌙</span>
+          <span class="theme-toggle__label">Dark</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="columns">
+      <section class="column-group">
+        <section class="column">
+          <h2>Groceries</h2>
+          <ul>
+            <% board.groceries.forEach(function(item) { %>
+              <li><span class="bullet">•</span> <%= item %></li>
+            <% }) %>
+          </ul>
+        </section>
+
+        <section class="column">
+          <h2>Other Shopping</h2>
+          <ul>
+            <% board.shopping.forEach(function(item) { %>
+              <li><span class="bullet">•</span> <%= item %></li>
+            <% }) %>
+          </ul>
+        </section>
+      </section>
+
+      <section class="column-group">
+        <section class="column">
+          <h2>Reminders</h2>
+          <ul>
+            <% board.reminders.forEach(function(item) { %>
+              <li><span class="bullet">•</span> <%= item %></li>
+            <% }) %>
+          </ul>
+        </section>
+
+        <section class="column">
+          <h2>Chores</h2>
+          <ul>
+            <% board.chores.forEach(function(item) { %>
+              <li><span class="bullet">•</span> <%= item %></li>
+            <% }) %>
+          </ul>
+        </section>
+      </section>
+    </section>
+
+    <section class="messages">
+      <h2>Messages</h2>
+      <ul class="message-list">
+        <% messages.forEach(function(msg) { %>
+          <li class="message-item">
+            <div class="message-user" style="--user-color: <%= msg.userColor %>">
+              <span class="dot"></span>
+              <span class="name"><%= msg.userName %></span>
+              <span class="time"><%= msg.at %></span>
+            </div>
+            <div class="message-text"><%= msg.text %></div>
+          </li>
+        <% }) %>
+      </ul>
+      <p class="read-only">This board is currently read‑only. Editing and logins will be added later.</p>
+    </section>
+  </main>
+  <script>
+    (function () {
+      const STORAGE_KEY = 'homeboard-theme';
+      const root = document.documentElement;
+
+      function applyTheme(theme) {
+        root.dataset.theme = theme;
+        const label = document.querySelector('.theme-toggle__label');
+        const icon = document.querySelector('.theme-toggle__icon');
+        if (!label || !icon) return;
+        if (theme === 'light') {
+          label.textContent = 'Light';
+          icon.textContent = '☀️';
+        } else {
+          label.textContent = 'Dark';
+          icon.textContent = '🌙';
+        }
+      }
+
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === 'light' || stored === 'dark') {
+        applyTheme(stored);
+      } else if (
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: light)').matches
+      ) {
+        applyTheme('light');
+      } else {
+        applyTheme('dark');
+      }
+
+      const btn = document.querySelector('.theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+          applyTheme(next);
+          localStorage.setItem(STORAGE_KEY, next);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

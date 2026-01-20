@@ -33,14 +33,15 @@
   - [x] reminders
   - [ ] messages
 - [ ] front end
-  - [ ] uses back end data
+  - [x] uses back end data
   - [ ] updates with data updates (SSE likely needed)
 - [x] database with seeding
-  - [ ] see dummy data for tables
+  - [x] see dummy data for tables
 - [ ] admin page
   - [ ] add record to existing data table
   - [ ] edit
   - [ ] archive (soft delete)
+- [ ] version 2: let copilot write it
 
 
 **API Endpoints (initial):**
@@ -113,7 +114,7 @@
 
 
 # Future feature batches
-
+- landscape view support
 
 # Notes
 - in the future, may need to download updates, which means database migrations would come in handy

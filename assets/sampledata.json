@@ -1,0 +1,83 @@
+{
+  "groceries": [
+    {
+      "id": 1,
+      "name": "Milk",
+      "category": "groceries"
+    },
+    {
+      "id": 2,
+      "name": "Eggs",
+      "category": "groceries"
+    },
+    {
+      "id": 3,
+      "name": "Bread",
+      "category": "groceries"
+    }
+  ],
+  "shopping": [
+    {
+      "id": 4,
+      "name": "Paper towels",
+      "category": "shopping"
+    },
+    {
+      "id": 5,
+      "name": "Dish soap",
+      "category": "shopping"
+    }
+  ],
+  "chores": [
+    {
+      "id": 2,
+      "name": "Vacuum living room",
+      "category": "chore",
+      "due_date": null,
+      "completed": false,
+      "assigned_user_id": null
+    },
+    {
+      "id": 4,
+      "name": "Take out trash",
+      "category": "chore",
+      "due_date": null,
+      "completed": false,
+      "assigned_user_id": null
+    },
+    {
+      "id": 5,
+      "name": "Do the dishes",
+      "category": "chore",
+      "due_date": null,
+      "completed": false,
+      "assigned_user_id": null
+    }
+  ],
+  "reminders": [
+    {
+      "id": 3,
+      "name": "Pay electricity bill",
+      "category": "reminder",
+      "due_date": null,
+      "completed": false,
+      "assigned_user_id": null
+    },
+    {
+      "id": 6,
+      "name": "Call mom",
+      "category": "reminder",
+      "due_date": null,
+      "completed": false,
+      "assigned_user_id": null
+    },
+    {
+      "id": 7,
+      "name": "Renew car registration",
+      "category": "reminder",
+      "due_date": null,
+      "completed": false,
+      "assigned_user_id": null
+    }
+  ]
+}

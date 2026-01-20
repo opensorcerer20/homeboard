@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
   const shopping = getListItems(CATEGORY.SHOPPING);
   const chores = listTasks({ category: CATEGORY.CHORE });
   const reminders = listTasks({ category: CATEGORY.REMINDER });
+  // console.log(JSON.stringify({groceries, shopping, chores, reminders}))
 
   res.render('index', {
     title: 'Home Board',
