@@ -20,5 +20,11 @@ export function renderHome(req, res, { boardUrl }) {
         users,
         messages,
         boardUrl,
+        currentPage: 'home',
+    });
+}
+export function renderLogin(req, res) {
+    res.render('user', {
+        currentPage: 'login',
     });
 }

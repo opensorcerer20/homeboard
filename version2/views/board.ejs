@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <%- include('partials/nav') %>
   <main class="app">
     <header class="header">
       <div>
@@ -18,14 +19,6 @@
           <span class="connection-text">Access via:</span>
           <span class="connection-url"><%= boardUrl %></span>
         </section>
-        <button
-          class="theme-toggle"
-          type="button"
-          aria-label="Toggle light or dark mode"
-        >
-          <span class="theme-toggle__icon">🌙</span>
-          <span class="theme-toggle__label">Dark</span>
-        </button>
       </div>
     </header>
 
@@ -91,6 +84,7 @@
   <script>
     (function () {
       const STORAGE_KEY = 'homeboard-theme';
+      const USER_KEY = 'homeboard-user-name';
       const root = document.documentElement;
 
       function applyTheme(theme) {
@@ -127,6 +121,36 @@
           localStorage.setItem(STORAGE_KEY, next);
         });
       }
+
+      function applyUser() {
+        const name = localStorage.getItem(USER_KEY);
+        const loginLink = document.getElementById('nav-login-link');
+        const logoutBtn = document.getElementById('nav-logout-button');
+
+        if (loginLink) {
+          loginLink.textContent = name && name.trim() ? name : 'Login';
+        }
+
+        if (logoutBtn) {
+          logoutBtn.style.display = name && name.trim() ? 'inline-flex' : 'none';
+        }
+      }
+
+      applyUser();
+
+      const logoutBtn = document.getElementById('nav-logout-button');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+          localStorage.removeItem(USER_KEY);
+          applyUser();
+        });
+      }
+
+      // Auto-refresh the board every 60 seconds to pick up changes.
+      const ONE_MINUTE_MS = 60_000;
+      setInterval(function () {
+        window.location.reload();
+      }, ONE_MINUTE_MS);
     })();
   </script>
 </body>

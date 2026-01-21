@@ -36,27 +36,29 @@ function clean() {
         return;
     }
     const data = parsed ?? {};
-    const usersRaw = Array.isArray(data.users) ? data.users : [];
-    const boardRaw = typeof data.board === 'object' && data.board !== null ? data.board : {};
+    const dataObj = (typeof data === 'object' && data !== null ? data : {});
+    const usersRaw = Array.isArray(dataObj.users) ? dataObj.users : [];
+    const boardRaw = typeof dataObj.board === 'object' && dataObj.board !== null ? dataObj.board : {};
     const validUsers = usersRaw
         .map((u) => UserSchema.safeParse(u))
         .filter((r) => r.success)
         .map((r) => r.data);
     const cleanStringArray = (value) => Array.isArray(value) ? value.filter((v) => typeof v === 'string') : [];
-    const messagesRaw = Array.isArray(boardRaw.messages)
-        ? boardRaw.messages
+    const boardObj = boardRaw;
+    const messagesRaw = Array.isArray(boardObj.messages)
+        ? boardObj.messages
         : [];
     const validMessages = messagesRaw
         .map((m) => BoardMessageSchema.safeParse(m))
         .filter((r) => r.success)
         .map((r) => r.data);
     const partialBoard = {
-        title: typeof boardRaw.title === 'string' ? boardRaw.title : '',
-        subtitle: typeof boardRaw.subtitle === 'string' ? boardRaw.subtitle : '',
-        groceries: cleanStringArray(boardRaw.groceries),
-        shopping: cleanStringArray(boardRaw.shopping),
-        reminders: cleanStringArray(boardRaw.reminders),
-        chores: cleanStringArray(boardRaw.chores),
+        title: typeof boardObj.title === 'string' ? boardObj.title : '',
+        subtitle: typeof boardObj.subtitle === 'string' ? boardObj.subtitle : '',
+        groceries: cleanStringArray(boardObj.groceries),
+        shopping: cleanStringArray(boardObj.shopping),
+        reminders: cleanStringArray(boardObj.reminders),
+        chores: cleanStringArray(boardObj.chores),
         messages: validMessages,
     };
     // Ensure the reconstructed object fully matches the schema (will throw if not).

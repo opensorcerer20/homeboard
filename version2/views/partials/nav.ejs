@@ -1,0 +1,31 @@
+<div class="nav-shell">
+  <nav class="nav">
+    <div class="nav-main">
+      <a
+        href="/"
+        class="nav-link<%= currentPage === 'home' ? ' nav-link--active' : '' %>"
+        <%= currentPage === 'home' ? 'aria-current="page" aria-disabled="true" tabindex="-1"' : '' %>
+      >Home</a>
+      <a
+        id="nav-login-link"
+        href="/login"
+        class="nav-link<%= currentPage === 'login' ? ' nav-link--active' : '' %>"
+        <%= currentPage === 'login' ? 'aria-current="page" aria-disabled="true" tabindex="-1"' : '' %>
+      >Login</a>
+      <button
+        id="nav-logout-button"
+        class="nav-logout"
+        type="button"
+        aria-label="Log out"
+      >Logout</button>
+    </div>
+    <button
+      class="theme-toggle"
+      type="button"
+      aria-label="Toggle light or dark mode"
+    >
+      <span class="theme-toggle__icon">🌙</span>
+      <span class="theme-toggle__label">Dark</span>
+    </button>
+  </nav>
+</div>

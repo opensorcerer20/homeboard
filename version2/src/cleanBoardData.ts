@@ -45,9 +45,15 @@ function clean() {
     return;
   }
 
-  const data: any = parsed ?? {};
-  const usersRaw = Array.isArray(data.users) ? data.users : [];
-  const boardRaw = typeof data.board === 'object' && data.board !== null ? data.board : {};
+  const data: unknown = parsed ?? {};
+  const dataObj = (typeof data === 'object' && data !== null ? data : {}) as {
+    users?: unknown;
+    board?: unknown;
+  };
+
+  const usersRaw = Array.isArray(dataObj.users) ? dataObj.users : [];
+  const boardRaw =
+    typeof dataObj.board === 'object' && dataObj.board !== null ? dataObj.board : {};
 
   const validUsers = usersRaw
     .map((u: unknown) => UserSchema.safeParse(u))
@@ -57,8 +63,18 @@ function clean() {
   const cleanStringArray = (value: unknown): string[] =>
     Array.isArray(value) ? value.filter((v) => typeof v === 'string') : [];
 
-  const messagesRaw = Array.isArray((boardRaw as any).messages)
-    ? (boardRaw as any).messages
+  const boardObj = boardRaw as {
+    title?: unknown;
+    subtitle?: unknown;
+    groceries?: unknown;
+    shopping?: unknown;
+    reminders?: unknown;
+    chores?: unknown;
+    messages?: unknown;
+  };
+
+  const messagesRaw = Array.isArray(boardObj.messages)
+    ? boardObj.messages
     : [];
 
   const validMessages = messagesRaw
@@ -67,13 +83,12 @@ function clean() {
     .map((r) => r.data);
 
   const partialBoard = {
-    title: typeof (boardRaw as any).title === 'string' ? (boardRaw as any).title : '',
-    subtitle:
-      typeof (boardRaw as any).subtitle === 'string' ? (boardRaw as any).subtitle : '',
-    groceries: cleanStringArray((boardRaw as any).groceries),
-    shopping: cleanStringArray((boardRaw as any).shopping),
-    reminders: cleanStringArray((boardRaw as any).reminders),
-    chores: cleanStringArray((boardRaw as any).chores),
+    title: typeof boardObj.title === 'string' ? boardObj.title : '',
+    subtitle: typeof boardObj.subtitle === 'string' ? boardObj.subtitle : '',
+    groceries: cleanStringArray(boardObj.groceries),
+    shopping: cleanStringArray(boardObj.shopping),
+    reminders: cleanStringArray(boardObj.reminders),
+    chores: cleanStringArray(boardObj.chores),
     messages: validMessages,
   };
 

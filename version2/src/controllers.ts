@@ -46,5 +46,12 @@ export function renderHome(req: Request, res: Response, { boardUrl }: RenderCont
     users,
     messages,
     boardUrl,
+    currentPage: 'home',
+  });
+}
+
+export function renderLogin(req: Request, res: Response): void {
+  res.render('user', {
+    currentPage: 'login',
   });
 }

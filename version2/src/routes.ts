@@ -3,7 +3,10 @@ import express, {
   type Response,
 } from 'express';
 
-import { renderHome } from './controllers.js';
+import {
+  renderHome,
+  renderLogin,
+} from './controllers.js';
 
 interface RoutesDeps {
   getBoardUrl: () => string;
@@ -16,6 +19,10 @@ export function createRoutes({ getBoardUrl }: RoutesDeps): express.Router {
   router.get('/', (req: Request, res: Response) => {
     const boardUrl = getBoardUrl();
     renderHome(req, res, { boardUrl });
+  });
+
+  router.get('/login', (req: Request, res: Response) => {
+    renderLogin(req, res);
   });
 
   return router;

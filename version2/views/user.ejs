@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Homeboard</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <%- include('partials/nav') %>
+  <main class="app">
+    <header class="header">
+      <div>
+        <h1>Login</h1>
+        <p class="subtitle">Coming soon</p>
+      </div>
+    </header>
+
+    <section class="messages">
+      <form id="login-form" class="login-form">
+        <label class="login-label" for="login-name">First name</label>
+        <div class="login-row">
+          <input
+            id="login-name"
+            name="name"
+            class="login-input"
+            type="text"
+            autocomplete="given-name"
+            required
+          />
+          <button class="login-button" type="submit">Log in</button>
+        </div>
+      </form>
+
+      <p id="login-greeting" class="login-greeting" style="display: none;">
+        Hello, <span id="login-greeting-name"></span>.
+      </p>
+    </section>
+  </main>
+  <script>
+    (function () {
+      const STORAGE_KEY = 'homeboard-theme';
+      const USER_KEY = 'homeboard-user-name';
+
+      const root = document.documentElement;
+
+      const form = document.getElementById('login-form');
+      const nameInput = document.getElementById('login-name');
+      const greeting = document.getElementById('login-greeting');
+      const greetingName = document.getElementById('login-greeting-name');
+      const loginLink = document.getElementById('nav-login-link');
+      const logoutBtn = document.getElementById('nav-logout-button');
+
+      function applyTheme(theme) {
+        root.dataset.theme = theme;
+        const label = document.querySelector('.theme-toggle__label');
+        const icon = document.querySelector('.theme-toggle__icon');
+        if (!label || !icon) return;
+        if (theme === 'light') {
+          label.textContent = 'Light';
+          icon.textContent = '☀️';
+        } else {
+          label.textContent = 'Dark';
+          icon.textContent = '🌙';
+        }
+      }
+
+      const storedTheme = localStorage.getItem(STORAGE_KEY);
+      if (storedTheme === 'light' || storedTheme === 'dark') {
+        applyTheme(storedTheme);
+      } else if (
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: light)').matches
+      ) {
+        applyTheme('light');
+      } else {
+        applyTheme('dark');
+      }
+
+      const themeButton = document.querySelector('.theme-toggle');
+      if (themeButton) {
+        themeButton.addEventListener('click', function () {
+          const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+          applyTheme(next);
+          localStorage.setItem(STORAGE_KEY, next);
+        });
+      }
+
+      function applyNav() {
+        const name = localStorage.getItem(USER_KEY);
+        if (loginLink) {
+          loginLink.textContent = name && name.trim() ? name : 'Login';
+        }
+        if (logoutBtn) {
+          logoutBtn.style.display = name && name.trim() ? 'inline-flex' : 'none';
+        }
+      }
+
+      function applyAuthUI() {
+        const name = localStorage.getItem(USER_KEY);
+        const hasName = !!(name && name.trim());
+
+        if (form) {
+          form.style.display = hasName ? 'none' : 'block';
+        }
+        if (greeting && greetingName) {
+          greeting.style.display = hasName ? 'block' : 'none';
+          greetingName.textContent = hasName ? name : '';
+        }
+      }
+
+      applyNav();
+      applyAuthUI();
+
+      if (form && nameInput) {
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          const value = nameInput.value.trim();
+          if (!value) return;
+          localStorage.setItem(USER_KEY, value);
+          applyNav();
+          applyAuthUI();
+        });
+      }
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+          localStorage.removeItem(USER_KEY);
+          applyNav();
+          applyAuthUI();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
