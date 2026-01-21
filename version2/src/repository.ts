@@ -31,8 +31,6 @@ export const ChoreSchema = z.object({
 });
 
 export const BoardSchema = z.object({
-  title: z.string(),
-  subtitle: z.string(),
   groceries: z.array(z.string()),
   shopping: z.array(z.string()),
   reminders: z.array(z.string()),
@@ -53,9 +51,43 @@ export type BoardData = z.infer<typeof BoardDataSchema>;
 let cachedData: BoardData | null = null;
 
 function loadFromDisk(): BoardData {
-  const raw = fs.readFileSync(DATA_PATH, 'utf8');
-  const parsed = JSON.parse(raw);
-  return BoardDataSchema.parse(parsed);
+  try {
+    const raw = fs.readFileSync(DATA_PATH, 'utf8');
+    const parsed = JSON.parse(raw);
+    return BoardDataSchema.parse(parsed);
+  } catch (err) {
+    const nodeErr = err as NodeJS.ErrnoException;
+    if (nodeErr.code === 'ENOENT') {
+      const initial: BoardData = BoardDataSchema.parse({
+        users: [
+          {
+            id: 1,
+            name: 'admin',
+            color: '#2b6cb0',
+          },
+        ],
+        board: {
+          groceries: [],
+          shopping: [],
+          reminders: [],
+          chores: [],
+          messages: [],
+        },
+      });
+
+      const dir = path.dirname(DATA_PATH);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      const json = JSON.stringify(initial, null, 2);
+      fs.writeFileSync(DATA_PATH, json, 'utf8');
+
+      return initial;
+    }
+
+    throw err;
+  }
 }
 
 export function initializeBoardData(): void {

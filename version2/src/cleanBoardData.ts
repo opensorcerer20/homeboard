@@ -25,8 +25,6 @@ function clean() {
     const empty = {
       users: [],
       board: {
-        title: '',
-        subtitle: '',
         groceries: [],
         shopping: [],
         reminders: [],
@@ -65,8 +63,6 @@ function clean() {
     Array.isArray(value) ? value.filter((v) => typeof v === 'string') : [];
 
   const boardObj = boardRaw as {
-    title?: unknown;
-    subtitle?: unknown;
     groceries?: unknown;
     shopping?: unknown;
     reminders?: unknown;
@@ -93,8 +89,6 @@ function clean() {
     .map((r) => r.data);
 
   const partialBoard = {
-    title: typeof boardObj.title === 'string' ? boardObj.title : '',
-    subtitle: typeof boardObj.subtitle === 'string' ? boardObj.subtitle : '',
     groceries: cleanStringArray(boardObj.groceries),
     shopping: cleanStringArray(boardObj.shopping),
     reminders: cleanStringArray(boardObj.reminders),
