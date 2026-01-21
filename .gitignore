@@ -3,6 +3,7 @@ package-lock.json
 .env
 .vscode
 dist/
+version2/data/boardData.json
 
 # SQLite database files and journals
 data/*.db

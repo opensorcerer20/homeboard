@@ -55,11 +55,48 @@
 
         <section class="column">
           <h2>Chores</h2>
-          <ul>
-            <% board.chores.forEach(function(item) { %>
-              <li><span class="bullet">•</span> <%= item %></li>
-            <% }) %>
-          </ul>
+          <% 
+            const choresByUser = {};
+            board.chores.forEach(function(chore, index) {
+              const user = users.find(function(u) { return u.id === chore.userId; }) || null;
+              const key = user ? String(user.id) : 'unassigned';
+              if (!choresByUser[key]) {
+                choresByUser[key] = { user: user, chores: [] };
+              }
+              choresByUser[key].chores.push({ chore: chore, index: index });
+            });
+
+            Object.keys(choresByUser).forEach(function(key) {
+              const group = choresByUser[key];
+              const user = group.user;
+          %>
+            <div class="chore-group">
+              <% if (user) { %>
+                <div class="chore-group-header">
+                  <span class="chore-user-dot" style="background-color: <%= user.color %>"></span>
+                  <span class="chore-user-label"><%= user.name %></span>
+                </div>
+              <% } %>
+              <ul>
+                <% group.chores.forEach(function(entry) { %>
+                  <% const chore = entry.chore; const idx = entry.index; %>
+                  <li data-chore-index="<%= idx %>">
+                    <span class="chore-text<%= chore.completed ? ' chore-text--completed' : '' %>">
+                      <%= chore.text %>
+                    </span>
+                    <% if (user) { %>
+                      <span
+                        class="chore-checkbox"
+                        data-user-name="<%= user.name %>"
+                        data-chore-index="<%= idx %>"
+                        aria-hidden="true"
+                      ><%= chore.completed ? '☑' : '☐' %></span>
+                    <% } %>
+                  </li>
+                <% }); %>
+              </ul>
+            </div>
+          <% }); %>
         </section>
       </section>
     </section>
@@ -126,17 +163,106 @@
         const name = localStorage.getItem(USER_KEY);
         const loginLink = document.getElementById('nav-login-link');
         const logoutBtn = document.getElementById('nav-logout-button');
+        const trimmedName = name ? name.trim() : '';
+        const hasName = !!trimmedName;
 
         if (loginLink) {
-          loginLink.textContent = name && name.trim() ? name : 'Login';
+          loginLink.textContent = hasName ? trimmedName : 'Login';
         }
 
         if (logoutBtn) {
-          logoutBtn.style.display = name && name.trim() ? 'inline-flex' : 'none';
+          logoutBtn.style.display = hasName ? 'inline-flex' : 'none';
         }
+
+        const checkboxes = document.querySelectorAll('.chore-checkbox');
+        checkboxes.forEach(function (el) {
+          const ownerName = (el.getAttribute('data-user-name') || '').trim();
+          if (hasName && ownerName.toLowerCase() === trimmedName.toLowerCase()) {
+            el.style.display = 'inline-block';
+          } else {
+            el.style.display = 'none';
+          }
+        });
       }
 
       applyUser();
+
+      const choreCheckboxes = document.querySelectorAll('.chore-checkbox');
+      choreCheckboxes.forEach(function (el) {
+        el.addEventListener('click', function () {
+          const name = localStorage.getItem(USER_KEY);
+          const trimmedName = name ? name.trim() : '';
+          const hasName = !!trimmedName;
+          const ownerName = (el.getAttribute('data-user-name') || '').trim();
+
+          if (!hasName || ownerName.toLowerCase() !== trimmedName.toLowerCase()) {
+            return;
+          }
+
+          const indexAttr = el.getAttribute('data-chore-index');
+          if (!indexAttr) {
+            return;
+          }
+
+          const index = Number(indexAttr);
+          if (!Number.isFinite(index)) {
+            return;
+          }
+
+          const isCompleted = el.textContent === '☑';
+
+          fetch('/api/chores/update', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              index: index,
+              userName: trimmedName,
+            }),
+          })
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error('Failed to complete chore');
+              }
+              return response.json();
+            })
+            .then(function () {
+              el.textContent = isCompleted ? '☐' : '☑';
+              const listItem = el.closest('li');
+              if (listItem) {
+                const textSpan = listItem.querySelector('.chore-text');
+                if (textSpan) {
+                  if (isCompleted) {
+                    textSpan.classList.remove('chore-text--completed');
+                  } else {
+                    textSpan.classList.add('chore-text--completed');
+                  }
+                }
+              }
+            })
+            .catch(function () {
+              // For now, ignore errors silently on the UI
+            });
+        });
+      });
+
+      const choreTexts = document.querySelectorAll('.chore-text');
+      choreTexts.forEach(function (textEl) {
+        textEl.addEventListener('click', function () {
+          const listItem = textEl.closest('li');
+          if (!listItem) {
+            return;
+          }
+
+          const checkbox = listItem.querySelector('.chore-checkbox');
+          if (!checkbox) {
+            return;
+          }
+
+          checkbox.click();
+        });
+      });
 
       const logoutBtn = document.getElementById('nav-logout-button');
       if (logoutBtn) {

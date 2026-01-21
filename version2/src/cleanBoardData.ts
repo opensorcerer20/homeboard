@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import {
   BoardDataSchema,
   BoardMessageSchema,
+  ChoreSchema,
   UserSchema,
 } from './repository.js';
 
@@ -82,13 +83,22 @@ function clean() {
     .filter((r) => r.success)
     .map((r) => r.data);
 
+  const choresRaw = Array.isArray(boardObj.chores)
+    ? boardObj.chores
+    : [];
+
+  const validChores = choresRaw
+    .map((c: unknown) => ChoreSchema.safeParse(c))
+    .filter((r) => r.success)
+    .map((r) => r.data);
+
   const partialBoard = {
     title: typeof boardObj.title === 'string' ? boardObj.title : '',
     subtitle: typeof boardObj.subtitle === 'string' ? boardObj.subtitle : '',
     groceries: cleanStringArray(boardObj.groceries),
     shopping: cleanStringArray(boardObj.shopping),
     reminders: cleanStringArray(boardObj.reminders),
-    chores: cleanStringArray(boardObj.chores),
+    chores: validChores,
     messages: validMessages,
   };
 

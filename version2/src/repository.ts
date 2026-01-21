@@ -24,13 +24,19 @@ export const BoardMessageSchema = z.object({
   at: z.string(),
 });
 
+export const ChoreSchema = z.object({
+  userId: z.number().optional(),
+  text: z.string(),
+  completed: z.boolean().optional().default(false),
+});
+
 export const BoardSchema = z.object({
   title: z.string(),
   subtitle: z.string(),
   groceries: z.array(z.string()),
   shopping: z.array(z.string()),
   reminders: z.array(z.string()),
-  chores: z.array(z.string()),
+  chores: z.array(ChoreSchema),
   messages: z.array(BoardMessageSchema),
 });
 
@@ -41,18 +47,39 @@ export const BoardDataSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>;
 export type BoardMessage = z.infer<typeof BoardMessageSchema>;
+export type Chore = z.infer<typeof ChoreSchema>;
 export type Board = z.infer<typeof BoardSchema>;
-type BoardData = z.infer<typeof BoardDataSchema>;
+export type BoardData = z.infer<typeof BoardDataSchema>;
+let cachedData: BoardData | null = null;
 
-function loadData(): BoardData {
+function loadFromDisk(): BoardData {
   const raw = fs.readFileSync(DATA_PATH, 'utf8');
   const parsed = JSON.parse(raw);
   return BoardDataSchema.parse(parsed);
 }
 
+export function initializeBoardData(): void {
+  if (cachedData == null) {
+    cachedData = loadFromDisk();
+  }
+}
+
+export function loadData(): BoardData {
+  if (cachedData == null) {
+    cachedData = loadFromDisk();
+  }
+  return cachedData;
+}
+
+export function saveBoardData(data: BoardData): void {
+  cachedData = data;
+  const json = JSON.stringify(data, null, 2);
+  fs.writeFileSync(DATA_PATH, json, 'utf8');
+}
+
 export function ensureBoardDataIsValid(): void {
   // Will throw if JSON is missing or invalid; callers can decide how to handle.
-  loadData();
+  initializeBoardData();
 }
 
 export function getUsers(): User[] {

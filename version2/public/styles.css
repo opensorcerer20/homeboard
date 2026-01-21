@@ -248,6 +248,53 @@ body {
   margin-bottom: 0.7rem;
 }
 
+.chore-user-label {
+  font-weight: 500;
+}
+
+.chore-user-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  margin-right: 0.4rem;
+}
+.chore-checkbox {
+  margin-left: 0.4rem;
+  color: var(--muted-text);
+  font-size: 0.9rem;
+  display: none;
+}
+
+.chore-group {
+  margin-bottom: 0.6rem;
+}
+
+.chore-group:last-child {
+  margin-bottom: 0;
+}
+
+.chore-group-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.chore-group ul {
+  list-style: disc;
+  padding-left: 2.25rem;
+}
+
+.chore-group li {
+  display: list-item;
+  align-items: initial;
+  gap: 0;
+}
+
+.chore-text--completed {
+  text-decoration: line-through;
+  color: var(--muted-text);
+}
+
 .message-list {
   list-style: none;
 }
