@@ -2,6 +2,7 @@ node_modules/
 package-lock.json
 .env
 .vscode
+dist/
 
 # SQLite database files and journals
 data/*.db
