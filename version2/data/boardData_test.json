@@ -59,22 +59,17 @@
       {
         "userId": 1,
         "text": "I already bought apples earlier today.",
-        "at": "Today 10:15"
+        "at": "2026-01-21T10:15:28.949Z"
       },
       {
         "userId": 2,
         "text": "Please don’t forget to take the bin out tonight.",
-        "at": "Today 09:00"
+        "at": "2026-01-20T09:00:28.949Z"
       },
       {
         "userId": 3,
         "text": "Planning to do bathrooms on Saturday.",
-        "at": "Yesterday 18:30"
-      },
-      {
-        "userId": 1,
-        "text": "test 1",
-        "at": "2026-01-21T02:37:28.949Z"
+        "at": "2026-01-20T18:30:28.949Z"
       }
     ]
   }

@@ -19,6 +19,7 @@ interface RenderContext {
 export interface EnrichedMessage extends BoardMessage {
   userName: string;
   userColor: string;
+  displayTime: string;
 }
 
 export function renderHome(req: Request, res: Response, { boardUrl }: RenderContext): void {
@@ -34,17 +35,32 @@ export function renderHome(req: Request, res: Response, { boardUrl }: RenderCont
   const messages: EnrichedMessage[] = board.messages.map((msg: BoardMessage) => {
     const user = users.find((u) => u.id === msg.userId) ?? fallbackUser;
 
+    const dt = new Date(msg.at);
+    const displayTime = Number.isNaN(dt.getTime())
+      ? msg.at
+      : dt.toLocaleString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+        });
+
     return {
       ...msg,
       userName: user.name,
       userColor: user.color,
+      displayTime,
     };
   });
+
+  const sortedMessages: EnrichedMessage[] = messages
+    .slice()
+    .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 
   res.render('board', {
     board,
     users,
-    messages,
+    messages: sortedMessages,
     boardUrl,
     currentPage: 'home',
   });

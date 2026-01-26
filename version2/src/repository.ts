@@ -21,7 +21,7 @@ export const UserSchema = z.object({
 export const BoardMessageSchema = z.object({
   userId: z.number(),
   text: z.string(),
-  at: z.string(),
+  at: z.string().datetime(),
 });
 
 export const ChoreSchema = z.object({

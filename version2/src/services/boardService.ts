@@ -23,6 +23,8 @@ const UpdateChoreInputSchema = z.object({
 
 export type UpdateChoreInput = z.infer<typeof UpdateChoreInputSchema>;
 
+const StringArraySchema = z.array(z.string());
+
 export class BoardService {
   createMessage(rawInput: unknown): BoardMessage {
     const input = CreateMessageInputSchema.parse(rawInput);
@@ -85,5 +87,41 @@ export class BoardService {
     saveBoardData(updated);
 
     return updatedChore;
+  }
+
+  updateGroceries(rawInput: unknown): string[] {
+    const items = StringArraySchema.parse(rawInput).map((item) => item.trim()).filter((item) => item.length > 0);
+
+    const data: BoardData = loadData();
+
+    const updated: BoardData = {
+      ...data,
+      board: {
+        ...data.board,
+        groceries: items,
+      },
+    };
+
+    saveBoardData(updated);
+
+    return items;
+  }
+
+  updateShopping(rawInput: unknown): string[] {
+    const items = StringArraySchema.parse(rawInput).map((item) => item.trim()).filter((item) => item.length > 0);
+
+    const data: BoardData = loadData();
+
+    const updated: BoardData = {
+      ...data,
+      board: {
+        ...data.board,
+        shopping: items,
+      },
+    };
+
+    saveBoardData(updated);
+
+    return items;
   }
 }

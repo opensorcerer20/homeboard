@@ -71,5 +71,43 @@ export function createRoutes({ getBoardUrl }: RoutesDeps): express.Router {
     }
   });
 
+  router.post('/api/groceries', async (req: Request, res: Response) => {
+    try {
+      const groceries = boardService.updateGroceries(req.body);
+      res.status(200).json({ groceries });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({
+          error: 'ValidationError',
+          issues: err.issues,
+        });
+        return;
+      }
+
+      // eslint-disable-next-line no-console
+      console.error('Failed to update groceries', err);
+      res.status(500).json({ error: 'InternalServerError' });
+    }
+  });
+
+  router.post('/api/shopping', async (req: Request, res: Response) => {
+    try {
+      const shopping = boardService.updateShopping(req.body);
+      res.status(200).json({ shopping });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({
+          error: 'ValidationError',
+          issues: err.issues,
+        });
+        return;
+      }
+
+      // eslint-disable-next-line no-console
+      console.error('Failed to update shopping', err);
+      res.status(500).json({ error: 'InternalServerError' });
+    }
+  });
+
   return router;
 }

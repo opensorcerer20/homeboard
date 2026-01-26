@@ -54,7 +54,7 @@
 
         <section class="column">
           <h2>Chores</h2>
-          <% 
+          <%
             const choresByUser = {};
             board.chores.forEach(function(chore, index) {
               const user = users.find(function(u) { return u.id === chore.userId; }) || null;
@@ -67,13 +67,12 @@
 
             Object.keys(choresByUser).forEach(function(key) {
               const group = choresByUser[key];
-              const user = group.user;
           %>
             <div class="chore-group">
-              <% if (user) { %>
+              <% if (group.user) { %>
                 <div class="chore-group-header">
-                  <span class="chore-user-dot" style="background-color: <%= user.color %>"></span>
-                  <span class="chore-user-label"><%= user.name %></span>
+                  <span class="chore-user-dot" data-user-color="<%= group.user.color %>"></span>
+                  <span class="chore-user-label"><%= group.user.name %></span>
                 </div>
               <% } %>
               <ul>
@@ -83,10 +82,10 @@
                     <span class="chore-text<%= chore.completed ? ' chore-text--completed' : '' %>">
                       <%= chore.text %>
                     </span>
-                    <% if (user) { %>
+                    <% if (group.user) { %>
                       <span
                         class="chore-checkbox"
-                        data-user-name="<%= user.name %>"
+                        data-user-name="<%= group.user.name %>"
                         data-chore-index="<%= idx %>"
                         aria-hidden="true"
                       ><%= chore.completed ? '☑' : '☐' %></span>
@@ -102,20 +101,22 @@
 
     <section class="messages">
       <h2>Messages</h2>
-      <ul class="message-list">
-        <% messages.forEach(function(msg) { %>
-          <li class="message-item">
-            <div class="message-user" style="--user-color: <%= msg.userColor %>">
-              <span class="dot"></span>
-              <span class="name"><%= msg.userName %></span>
-              <span class="time"><%= msg.at %></span>
-            </div>
-            <div class="message-text"><%= msg.text %></div>
-          </li>
-        <% }) %>
-      </ul>
-      <p class="read-only">This board is currently read‑only. Editing and logins will be added later.</p>
+        <ul class="message-list">
+          <% messages.forEach(function(msg) { %>
+            <li class="message-item">
+              <div class="message-user" style="--user-color: <%= msg.userColor %>">
+                <span class="dot"></span>
+                <span class="name"><%= msg.userName %></span>
+                <span class="time"><%= msg.displayTime %></span>
+              </div>
+              <div class="message-text"><%= msg.text %></div>
+            </li>
+          <% }) %>
+        </ul>
+        <p class="read-only">This board is currently read‑only. Editing and logins will be added later.</p>
+      </div>
     </section>
+
   </main>
   <script>
     (function () {
@@ -244,6 +245,14 @@
               // For now, ignore errors silently on the UI
             });
         });
+      });
+
+      const choreUserDots = document.querySelectorAll('.chore-user-dot');
+      choreUserDots.forEach(function (dot) {
+        const color = dot.getAttribute('data-user-color');
+        if (color) {
+          dot.style.backgroundColor = color;
+        }
       });
 
       const choreTexts = document.querySelectorAll('.chore-text');
